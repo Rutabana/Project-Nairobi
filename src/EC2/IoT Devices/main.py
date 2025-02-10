@@ -19,7 +19,7 @@ def random_seven_digit_integer():
 def run_script(script_name):
     # Call the functions and convert the coordinates list to a comma-separated string
     number_arg = random_seven_digit_integer()
-    coords = random_coordinates()  # This is a list, e.g. [-1.293, 36.820, 0]
+    coords = random_coordinates()
     coords_str = ','.join(map(str, coords))
     
     os.system(f"python \"./src/EC2/IoT Devices/{script_name}\" {number_arg} {coords_str}")
