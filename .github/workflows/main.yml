@@ -1,3 +1,10 @@
+name: Reboot ASG on PR Merge
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   scale-down-asg:
     runs-on: ubuntu-latest
@@ -6,11 +13,15 @@ jobs:
       - name: Configure AWS Credentials (via OIDC)
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/github-actions
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions
           aws-region: us-east-2
 
-      - name: Send API request to scale down ASG
+      - name: Debug AWS Identity
+        run: aws sts get-caller-identity
+
+      - name: Debug API Gateway Request
         run: |
-          curl -X POST "${{ secrets.API_GATEWAY_URL }}" \
-          -H "Content-Type: application/json" \
-          -d '{"asg_name": "NairobiIoTSimASG"}'
+          echo "Using API Gateway URL: ${{ secrets.API_GATEWAY_URL }}"
+          curl -v -X POST "${{ secrets.API_GATEWAY_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"asg_name": "NairobiIoTSimASG"}'
