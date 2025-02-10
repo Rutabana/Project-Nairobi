@@ -1,0 +1,23 @@
+name: Scale Down ASG on PR Merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  scale-down-asg:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Send API request to scale down ASG
+        run: |
+          curl -X POST "https://ii5zfa67z4.execute-api.us-east-2.amazonaws.com/default/reboot_iot_asg" \
+          -H "Content-Type: application/json" \
+          -d '{"asg_name": "NairobiIoTSimASG"}'
+
+      - name: Confirm ASG Scale Down Request Sent
+        run: echo "Scale down request sent to Auto Scaling Group"
