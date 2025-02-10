@@ -33,6 +33,7 @@ def spawn_threads():
 
   threads = []
 
+  # Simulate multiple devices concurrently
   for _ in range(phone_threads):
     thread = threading.Thread(target=run_script, args=("phone.py",))
     threads.append(thread)
