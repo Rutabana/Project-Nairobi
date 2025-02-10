@@ -1,23 +1,16 @@
-name: Scale Down ASG on PR Merge
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   scale-down-asg:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Configure AWS Credentials (via OIDC)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/YOUR_GITHUB_ROLE
+          aws-region: us-east-2
 
       - name: Send API request to scale down ASG
         run: |
-          curl -X POST "https://ii5zfa67z4.execute-api.us-east-2.amazonaws.com/default/reboot_iot_asg" \
+          curl -X POST "${{ secrets.API_GATEWAY_URL }}" \
           -H "Content-Type: application/json" \
-          -d '{"asg_name": "NairobiIoTSimASG", "source": "GitHub Actions"}'
-
-      - name: Confirm ASG Scale Down Request Sent
-        run: echo "Scale down request sent to Auto Scaling Group"
+          -d '{"asg_name": "NairobiIoTSimASG"}'
