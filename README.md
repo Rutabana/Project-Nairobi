@@ -1,4 +1,4 @@
-# 🌆**Project Nairobi**  
+# 🌆 **Project Nairobi**  
 Project Nairobi is a real-time distributed analytics platform built on AWS, simulating an urban environment in Nairobi, Kenya. The project ingests high-volume IoT and social media data—such as simulated phone pings, vehicle telemetry, and drone sensor readings—using **AWS Kinesis**. This data is processed in near real-time by **AWS Lambda** and stored in **Amazon S3** for further analysis.
 
 ---

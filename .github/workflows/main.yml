@@ -17,7 +17,7 @@ jobs:
         run: |
           curl -X POST "https://ii5zfa67z4.execute-api.us-east-2.amazonaws.com/default/reboot_iot_asg" \
           -H "Content-Type: application/json" \
-          -d '{"asg_name": "NairobiIoTSimASG"}'
+          -d '{"asg_name": "NairobiIoTSimASG", "source": "GitHub Actions"}'
 
       - name: Confirm ASG Scale Down Request Sent
         run: echo "Scale down request sent to Auto Scaling Group"
