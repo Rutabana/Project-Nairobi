@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  scale-down-asg:
+  reboot-asg:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +14,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions
-          aws-region: us-east-2
+          aws-region: us-east-1
 
       - name: Debug AWS Identity
         run: aws sts get-caller-identity
