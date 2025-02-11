@@ -22,11 +22,11 @@ def run_script(script_name):
     coords = random_coordinates()
     coords_str = ','.join(map(str, coords))
     
-    os.system(f"python {script_name}\" {number_arg} {coords_str}")
+    os.system(f"python {script_name} {number_arg} {coords_str}")
 
 
 def spawn_threads():
-  max_threads = 25
+  max_threads = 12
   phone_threads = int(max_threads * 0.55)
   car_threads = int(max_threads * 0.35)
   drone_threads = max_threads - phone_threads - car_threads

@@ -25,7 +25,7 @@ def simulate(id, location):
       response = kinesis_client.put_record(
         StreamName=stream_name,
         Data=data_bytes,
-        ParitionKey=device_id,
+        PartionKey=device_id,
       )
       # print(f"Send record {response['SequenceNumber']}")
     except ClientError as e:
