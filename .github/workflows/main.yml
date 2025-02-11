@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write   # Required for OIDC authentication
-      contents: read    # Allows reading the repository content (optional)
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
 
     steps:
       - name: Debug GitHub OIDC Token
@@ -25,7 +25,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_IAM_REGION }}
           audience: sts.amazonaws.com
 
       - name: Debug AWS Identity
@@ -36,4 +36,4 @@ jobs:
           echo "Using API Gateway URL: ${{ secrets.API_GATEWAY_URL }}"
           curl -X POST "${{ secrets.API_GATEWAY_URL }}" \
           -H "Content-Type: application/json" \
-          -d '{"asg_name": "NairobiIoTSimASG"}'
+          -d '{"asg_name": "NairobiIoTSimASG", "source": "GitHub Actions"}'
