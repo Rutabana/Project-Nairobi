@@ -22,7 +22,7 @@ def run_script(script_name):
     coords = random_coordinates()
     coords_str = ','.join(map(str, coords))
     
-    os.system(f"python \"./src/EC2/IoT Devices/{script_name}\" {number_arg} {coords_str}")
+    os.system(f"python {script_name}\" {number_arg} {coords_str}")
 
 
 def spawn_threads():
