@@ -19,4 +19,4 @@ else
   cd /Project-Nairobi
 fi
 
-python3 "/src/EC2/IoT Devices/main.py"
+python "/src/EC2/IoT Devices/main.py"
