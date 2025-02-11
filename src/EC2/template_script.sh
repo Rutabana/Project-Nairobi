@@ -1,8 +1,12 @@
 #!/bin/bash
 # Update packages and install python3 if not already installed
 yum update -y
-yum install -y python3
+yum install -y python
+yum install -y pip
 yum install -y git
+
+# Install necessary modules for python scripts
+pip install boto3
 
 # Change to a working directory (optional)
 cd /home/ec2-user

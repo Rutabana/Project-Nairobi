@@ -22,12 +22,12 @@ def simulate(id, location):
     data_bytes = json.dumps(payload).encode('utf-8')
 
     try:
-      # response = kinesis_client.put_record(
-      #   StreamName=stream_name,
-      #   Data=data_bytes,
-      #   ParitionKey=device_id,
-      # )
-      print(f'{device_id} ping!')
+      response = kinesis_client.put_record(
+        StreamName=stream_name,
+        Data=data_bytes,
+        ParitionKey=device_id,
+      )
+      # print(f'{device_id} ping!')
       # print(f"Send record {response['SequenceNumber']}")
     except ClientError as e:
       print(f"Failed to send record: {e}")
