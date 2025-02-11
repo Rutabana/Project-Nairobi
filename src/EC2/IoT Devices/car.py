@@ -28,7 +28,6 @@ def simulate(id, location):
         Data=data_bytes,
         ParitionKey=device_id,
       )
-      # print(f'{device_id} ping!')
       # print(f"Send record {response['SequenceNumber']}")
     except ClientError as e:
       print(f"Failed to send record: {e}")

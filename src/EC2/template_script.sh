@@ -12,11 +12,10 @@ pip install boto3
 cd /home/ec2-user
 # Check if the directory Project-Nairobi exists
 if [ -d "Project-Nairobi" ]; then
-  cd /Project-Nairobi
   git pull
 else
   git clone https://github.com/Rutabana/Project-Nairobi.git
-  cd /Project-Nairobi
 fi
 
-python "/src/EC2/IoT Devices/main.py"
+cd "/Project-Nairobi/src/EC2/IoT Devices"
+python main.py
