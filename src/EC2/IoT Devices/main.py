@@ -2,7 +2,7 @@ import random
 import threading
 import os
 
-nairobi_coordinates = [-1.292076, 36.821948]
+nairobi_coordinates = [-1.292076, 36.821948, 0.000000]
 
 # Returns a random location in the city
 # square of Nairobi
@@ -10,7 +10,7 @@ def random_coordinates():
   return [
     round(random.uniform(-1.307963, -1.282735), 6), # Latitude
     round(random.uniform(36.808427, 36.844133), 6), # Longitude
-    0                                               # Altitude
+    0.000000                                        # Altitude
     ]
   
 def random_seven_digit_integer():
@@ -26,7 +26,7 @@ def run_script(script_name):
 
 
 def spawn_threads():
-  max_threads = 12
+  max_threads = 30
   phone_threads = int(max_threads * 0.55)
   car_threads = int(max_threads * 0.35)
   drone_threads = max_threads - phone_threads - car_threads

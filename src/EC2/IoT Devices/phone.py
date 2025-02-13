@@ -32,7 +32,7 @@ def simulate(id, location):
       print(f"Failed to send record: {e}")
       # TODO: Implement a backoff strategy here
     
-    time.sleep(10) #TODO: change this to 10 when I know it's working
+    time.sleep(60) #TODO: change this to 10 when I know it's working
 
 if __name__ == '__main__':
   if (len(sys.argv) == 3):
