@@ -5,6 +5,7 @@ import boto3
 from botocore.exceptions import ClientError
 from typing import List, Tuple, Union
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 DEGREES_PER_KM = 0.009  # Nairobi
 
 def parse_3d(vector_str: str, name: str = "vector") -> Union[List[float], Tuple[float, float, float]]:
