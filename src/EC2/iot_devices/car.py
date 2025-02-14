@@ -1,82 +1,16 @@
 import time
 import json
-import boto3
 import sys
 import random
 import logging
-from botocore.exceptions import ClientError
 from typing import List, Tuple
-from tenacity import retry, stop_after_attempt, wait_exponential
-from src.util.sim_functions import parse_location
+from src.util.sim_functions import *
 
 DEGREES_PER_KM = 0.009  # Nairobi
-
 logging.basicConfig(level=logging.INFO)
 
-
-def update_location(
-    location: List[float], direction: str, total_distance_km: float, speed_kmh: int
-) -> Tuple[List[float], float]:
-    """Updates coordinates based on movement direction and speed.
-
-    Args:
-        location: Current coordinates [lat, lon] or [lat, lon, altitude].
-        direction: Movement direction ("North", "South", etc.).
-        total_distance_km: Cumulative distance traveled (km).
-        speed_kmh: Speed in kilometers per hour.
-
-    Returns:
-        Tuple[List[float], float]: Updated coordinates and total distance.
-
-    Example:
-        >>> update_location([-1.2921, 36.8219], "North", 0, 60)
-        ([-1.2831, 36.8219], 1.0)
-    """
-    # Distance covered in 1 minute (km)
-    km_per_ping = speed_kmh / 60  # e.g., 60 km/h → 1 km/min
-
-    # Degrees to adjust (Nairobi-specific: 0.009° ≈ 1 km)
-    increment_deg = DEGREES_PER_KM * km_per_ping  # 1 km → 0.009°
-    lat, lon, *rest = location
-
-    if direction == "North":
-        new_lat = lat + increment_deg
-        new_lon = lon
-    elif direction == "South":
-        new_lat = lat - increment_deg
-        new_lon = lon
-    elif direction == "East":
-        new_lat = lat
-        new_lon = lon + increment_deg
-    elif direction == "West":
-        new_lat = lat
-        new_lon = lon - increment_deg
-    else:
-        return (location, total_distance_km)
-
-    # Update TOTAL distance traveled (km)
-    updated_distance = total_distance_km + km_per_ping  # ✅ Correct unit (km)
-    new_location = [
-        round(new_lat, 6),
-        round(new_lon, 6),
-        *rest,
-    ]  # Precision to 6 decimals
-
-    return (new_location, updated_distance)
-
-
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
-def send_to_kinesis(client: boto3.client, data: bytes, stream: str, key: str) -> None:
-    try:
-        client.put_record(StreamName=stream, Data=data, PartitionKey=key)
-    except ClientError as e:
-        print(f"Final attempt failed: {e}")
-        raise  # Re-raise after retries
-
-
-def simulate(device_id: str, location: List[float], test: bool) -> None:
-    kinesis_client = boto3.client("kinesis", region_name="us-east-2")
-    stream_name = "nairobi-stream"
+def simulate(device_id: str, location: List[float], 
+             direction: float, test: bool) -> None:
     speed_kmh = random.randint(30, 90)  # km/h
     direction = random.choice(["North", "East", "South", "West", "none"])
     total_distance_km = 0
@@ -93,8 +27,10 @@ def simulate(device_id: str, location: List[float], test: bool) -> None:
 
         # Fix: float operations may result in incorrect approximates. This also handles edge cases
         gas = min(100.0, max(round(gas - 0.2, 1), 0.0))
-        location, total_distance_km = update_location(
-            location, direction, total_distance_km, speed_kmh
+        
+        velocity_vector = heading_to_vector(direction, speed_kmh)
+        location, total_distance_km = update_location_vector(
+            location, velocity_vector, total_distance_km, speed_kmh
         )
 
         # Construct the JSON payload
@@ -113,28 +49,26 @@ def simulate(device_id: str, location: List[float], test: bool) -> None:
             logging.info("Simulation payload: %s", payload)
         else:
             send_to_kinesis(
-                client=kinesis_client,
                 data=data_bytes,
-                stream=stream_name,
                 key=device_id,
             )
-
         time.sleep(60)
 
 
 if __name__ == "__main__":
     size = len(sys.argv)
-    required_args = 2  # device_id and location
+    required_args = 3  # device_id, location and direction
     if len(sys.argv) not in [
         required_args + 1,
         required_args + 2,
     ]:  # +1 for script name
-        print(f"Usage: {sys.argv[0]} <id> <location> [TEST]")
+        print(f"Usage: {sys.argv[0]} <id> <location> <direction> [TEST]")
         sys.exit(1)
     else:
         id = sys.argv[1]
-        location = parse_location(sys.argv[2])
+        location = parse_3d(sys.argv[2])
+        direction = sys.argv[3]
         device_id = f"car-{id}"
-        test = size == 4 and sys.argv[3] == "TEST"
+        test = size == 5 and sys.argv[4] == "TEST"
 
-        simulate(device_id, location, test)
+        simulate(device_id, location, direction, test)
