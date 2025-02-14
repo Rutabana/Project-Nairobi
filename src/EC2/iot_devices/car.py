@@ -3,34 +3,15 @@ import json
 import boto3
 import sys
 import random
+import logging
 from botocore.exceptions import ClientError
 from typing import List, Tuple
 from tenacity import retry, stop_after_attempt, wait_exponential
+from src.util.sim_functions import parse_location
 
 DEGREES_PER_KM = 0.009  # Nairobi
 
-
-def parse_location(location_str: str) -> List[float]:
-    """Parses a location string into a list of floats.
-
-    Args:
-        location_str: A string formatted as a JSON array (e.g., "[lat, lon]" or "[lat, lon, alt]").
-
-    Returns:
-        List[float]: Parsed coordinates (latitude, longitude, and optional altitude).
-
-    Raises:
-        SystemExit: If the input is not a valid JSON array.
-
-    Example:
-        >>> parse_location("[1.2921, 36.8219]")
-        [1.2921, 36.8219]
-    """
-    try:
-        return json.loads(location_str)  # Handles "[lat, lon]" or "[lat, lon, alt]"
-    except json.JSONDecodeError:
-        print(f"Invalid location format: {location_str}")
-        sys.exit(1)
+logging.basicConfig(level=logging.INFO)
 
 
 def update_location(
@@ -104,7 +85,7 @@ def simulate(device_id: str, location: List[float], test: bool) -> None:
     while True:
         # Consider turning
         if random.randint(1, 5) == 1:
-            direction = random.choice(["North", "East", "South", "West", "none"])
+            direction = random.choice([0, 90, 180, 270, "none"])
 
         # Consider getting gas
         if gas <= 30 and random.randint(1, 10) == 1:
@@ -129,7 +110,7 @@ def simulate(device_id: str, location: List[float], test: bool) -> None:
         data_bytes = json.dumps(payload).encode("utf-8")
 
         if test:
-            print(payload)
+            logging.info("Simulation payload: %s", payload)
         else:
             send_to_kinesis(
                 client=kinesis_client,
