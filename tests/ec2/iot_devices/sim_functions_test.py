@@ -158,3 +158,109 @@ def test_update_location_vector_negative_altitude():
 
 # ------------------------------ INTEGRATION TEST ------------------------------- #
 
+def test_integration_car_movement():
+    """Test a car moving north for 1 hour."""
+    # Initial location
+    location_str = "[1.2921, 36.8219, 0.0]"
+    location = parse_3d(location_str)
+
+    # Movement parameters
+    heading = 0  # North
+    speed_kmh = 60  # 60 km/h
+    total_distance_km = 0.0
+
+    # Simulate 1 hour of movement (3600 seconds)
+    for _ in range(3600):
+        velocity_vector = heading_to_vector(heading, speed_kmh)
+        location, total_distance_km = update_location_vector(
+            location, velocity_vector, total_distance_km, speed_kmh
+        )
+
+    # Expected final location
+    expected_lat = 1.2921 + (60 * DEGREES_PER_KM)  # 60 km north
+    expected_lon = 36.8219  # No change in longitude
+    expected_alt = 0.0  # No change in altitude
+
+    assert location == pytest.approx([expected_lat, expected_lon, expected_alt], abs=1e-6)
+    assert total_distance_km == pytest.approx(60.0)  # 60 km traveled
+
+def test_integration_drone_ascent_and_movement():
+    """Test a drone ascending and moving east."""
+    # Initial location
+    location_str = "[1.2921, 36.8219, 0.0]"
+    location = parse_3d(location_str)
+
+    # Movement parameters
+    heading = 90  # East
+    speed_kmh = 30  # 30 km/h
+    total_distance_km = 0.0
+
+    # Simulate 1 minute of movement (60 seconds)
+    for _ in range(60):
+        velocity_vector = heading_to_vector(heading, speed_kmh)
+        velocity_vector = (velocity_vector[0], velocity_vector[1], 0.1)  # Ascend at 0.1 m/s
+        location, total_distance_km = update_location_vector(
+            location, velocity_vector, total_distance_km, speed_kmh
+        )
+
+    # Expected final location
+    expected_lat = 1.2921
+    expected_lon = 36.8219 + (30 * DEGREES_PER_KM / 60)  # 0.5 km east
+    expected_alt = 6.0  # 0.1 m/s * 60 seconds = 6 meters
+
+    assert location == pytest.approx([expected_lat, expected_lon, expected_alt], abs=1e-6)
+    assert total_distance_km == pytest.approx(0.5)  # 0.5 km traveled
+
+def test_integration_phone_recharge():
+    """Test a phone recharging after low battery."""
+    # Initial location
+    location_str = "[1.2921, 36.8219, 0.0]"
+    location = parse_3d(location_str)
+
+    # Movement parameters
+    heading = 180  # South
+    speed_kmh = 5  # 5 km/h (walking speed)
+    total_distance_km = 0.0
+
+    # Simulate 10 minutes of movement (600 seconds)
+    for _ in range(600):
+        velocity_vector = heading_to_vector(heading, speed_kmh)
+        location, total_distance_km = update_location_vector(
+            location, velocity_vector, total_distance_km, speed_kmh
+        )
+
+    # Expected final location (adjust tolerance to 1e-5)
+    expected_lat = 1.2921 - (5 * DEGREES_PER_KM / 6)
+    expected_lon = 36.8219
+    expected_alt = 0.0
+
+    # Using abs=1e-4 to account for rounding errors
+    assert location == pytest.approx([expected_lat, expected_lon, expected_alt], abs=1e-4)
+    assert total_distance_km == pytest.approx(0.833, abs=1e-3)
+
+def test_integration_zero_speed():
+    """Test a device with zero speed (no movement)."""
+    # Initial location
+    location_str = "[1.2921, 36.8219, 0.0]"
+    location = parse_3d(location_str)
+
+    # Movement parameters
+    heading = 45  # Northeast
+    speed_kmh = 0  # 0 km/h
+    total_distance_km = 0.0
+
+    # Simulate 1 minute of movement (60 seconds)
+    for _ in range(60):
+        velocity_vector = heading_to_vector(heading, speed_kmh)
+        location, total_distance_km = update_location_vector(
+            location, velocity_vector, total_distance_km, speed_kmh
+        )
+
+    # Expected final location (no change)
+    expected_lat = 1.2921
+    expected_lon = 36.8219
+    expected_alt = 0.0
+
+    assert location == pytest.approx([expected_lat, expected_lon, expected_alt], abs=1e-6)
+    assert total_distance_km == pytest.approx(0.0)  # No distance traveled
+
