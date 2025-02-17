@@ -20,6 +20,7 @@ This project serves as both a learning journey and an exploration of real-world 
 - ✅ Implement **DynamoDB** for real-time state tracking.  
 - ✅ Improve **event processing logic** in Lambda.  
 - 🔄 Automate deployment with **GitHub Actions** (pull latest scripts on ASG instances).  
+- 🧪 Implement **Unit, and Integration Test**, Mocking out AWS
 
 ---
 

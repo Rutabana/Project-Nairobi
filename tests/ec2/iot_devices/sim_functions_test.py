@@ -154,3 +154,7 @@ def test_update_location_vector_negative_altitude():
     
     assert new_loc == pytest.approx([1.2921, 36.8219, 99.95])
     assert new_dist == pytest.approx(2.5 + (5 / 3600))
+
+
+# ------------------------------ INTEGRATION TEST ------------------------------- #
+
