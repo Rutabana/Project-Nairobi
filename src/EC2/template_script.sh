@@ -5,9 +5,6 @@ yum install -y python
 yum install -y pip
 yum install -y git
 
-# Install necessary modules for python scripts
-pip install boto3
-
 # Change to a working directory (optional)
 cd /home/ec2-user
 # Check if the directory Project-Nairobi exists
@@ -17,5 +14,7 @@ else
   git clone https://github.com/Rutabana/Project-Nairobi.git
 fi
 
-cd "/Project-Nairobi/src/EC2/IoT Devices"
+cd "/Project-Nairobi/src/ec2/iot_devices"
+
+./setup.sh
 python main.py
