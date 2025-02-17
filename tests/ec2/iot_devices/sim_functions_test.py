@@ -52,6 +52,13 @@ def test_parse_3d_non_numeric_elements():
     with pytest.raises(SystemExit):
         parse_3d(vector_str, name="velocity")
 
+def test_parse_3d_with_whitespace():
+    """Test that parse_3d correctly parses a JSON array string with extra whitespace."""
+    vector_str = " [ 1.2921 , 36.8219 , 100.0 ] "
+    result = parse_3d(vector_str, name="location")
+    assert result == [1.2921, 36.8219, 100.0]
+
+
 # ---------------------------------- Edge Cases ---------------------------------- #
 def test_parse_3d_zero_values():
     """Test zeros in all dimensions."""
