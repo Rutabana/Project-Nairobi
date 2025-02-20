@@ -1,6 +1,6 @@
 import random
 import threading
-import os
+import subprocess
 from typing import List
 
 # Constants
@@ -30,12 +30,17 @@ def run_script(module_name: str):
     """
     number_arg = random_seven_digit_integer()
     coords = random_coordinates()
-    # Wrap the coordinates in square brackets to form a valid JSON array string
-    coords_str = "[" + ','.join(map(str, coords)) + "]"
+
+    # Wrapping the coordinates in square brackets to form a valid JSON array string
+    coords_str = f"[{','.join(map(str, coords))}]"
     heading = random_heading()
     
-    # Run the module using the -m flag
-    os.system(f"python -m {module_name} {number_arg} {coords_str} {heading}")
+    # Running the module using subprocess
+    command = [
+        "python", "-m", module_name,
+        str(number_arg), coords_str, str(heading)
+    ]
+    subprocess.run(command)
 
 def spawn_threads():
     """Spawns threads to simulate multiple devices concurrently."""
