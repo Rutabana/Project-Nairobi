@@ -9,6 +9,7 @@ yum install -y git
 cd /home/ec2-user
 # Check if the directory Project-Nairobi exists
 if [ -d "Project-Nairobi" ]; then
+  git config --global --add safe.direcotry "/home/ec2-user/Project-Nairobi"
   cd "Project-Nairobi/"
   git pull
 else
@@ -24,6 +25,5 @@ fi
 
 cd ..
 
-# ./setup.sh
-pip install -e .
+./src/ec2/iot_devices/setup.sh
 python src/ec2/iot_devices/main.py

@@ -22,7 +22,7 @@ def random_heading() -> float:
     """Returns a random heading in degrees (0 = North, 90 = East, etc.)."""
     return random.choice([0, 90, 180, 270])
 
-def run_script(module_name: str):
+def run_script(module_name: str) -> None:
     """Runs a device simulation module with random arguments.
     
     module_name: the module path without the .py extension,
@@ -42,9 +42,9 @@ def run_script(module_name: str):
     ]
     subprocess.run(command)
 
-def spawn_threads():
+def spawn_threads(num_threads: int) -> None:
     """Spawns threads to simulate multiple devices concurrently."""
-    max_threads = 30
+    max_threads = num_threads
     phone_threads = int(max_threads * 0.55)  # 55% phones
     car_threads = int(max_threads * 0.35)    # 35% cars
     drone_threads = max_threads - phone_threads - car_threads  # 10% drones
@@ -73,4 +73,8 @@ def spawn_threads():
         thread.join()
 
 if __name__ == "__main__":
-    spawn_threads()
+    if (len(sys.argv) not in [1, 2]):
+        print(f"Usage: {sys.argv[0]} [NUM_THREADS]")
+        sys.exit(1)
+    num_threads = int(sys.argv[1]) if len(sys.argv) == 2 else 25
+    spawn_threads(num_threads)
