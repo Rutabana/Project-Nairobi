@@ -9,12 +9,21 @@ yum install -y git
 cd /home/ec2-user
 # Check if the directory Project-Nairobi exists
 if [ -d "Project-Nairobi" ]; then
+  cd "Project-Nairobi/"
   git pull
 else
   git clone https://github.com/Rutabana/Project-Nairobi.git
+  cd "Project-Nairobi"
 fi
 
-cd "/Project-Nairobi/src/ec2/iot_devices"
+cd "src"
 
-./setup.sh
-python main.py
+if [ -d "EC2" ]; then
+  mv EC2/ ec2/
+fi
+
+cd ..
+
+# ./setup.sh
+pip install -e .
+python src/ec2/iot_devices/main.py

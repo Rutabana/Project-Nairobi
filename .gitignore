@@ -1,3 +1,4 @@
 # template_script.sh
 scale_asg.py
 .vscode
+nairobi-ec2-keypair.pem
