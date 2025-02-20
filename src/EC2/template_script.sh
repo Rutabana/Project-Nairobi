@@ -14,6 +14,7 @@ if [ -d "Project-Nairobi" ]; then
   git pull
 else
   git clone https://github.com/Rutabana/Project-Nairobi.git
+  git config --global --add safe.direcotry "/home/ec2-user/Project-Nairobi"
   cd "Project-Nairobi"
 fi
 
@@ -25,5 +26,6 @@ fi
 
 cd ..
 
+chmod +x ./src/ec2/iot_devices/setup.sh
 ./src/ec2/iot_devices/setup.sh
 python src/ec2/iot_devices/main.py
