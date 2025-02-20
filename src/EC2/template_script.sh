@@ -9,12 +9,12 @@ yum install -y git
 cd /home/ec2-user
 # Check if the directory Project-Nairobi exists
 if [ -d "Project-Nairobi" ]; then
-  git config --global --add safe.direcotry "/home/ec2-user/Project-Nairobi"
+  git config --global --add safe.directory "/home/ec2-user/Project-Nairobi"
   cd "Project-Nairobi/"
   git pull
 else
   git clone https://github.com/Rutabana/Project-Nairobi.git
-  git config --global --add safe.direcotry "/home/ec2-user/Project-Nairobi"
+  git config --global --add safe.directory "/home/ec2-user/Project-Nairobi"
   cd "Project-Nairobi"
 fi
 
