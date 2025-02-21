@@ -90,8 +90,12 @@ class Drone:
             send_to_kinesis(data=data_bytes, key=self.device_id)
         return payload
 
-    def simulate(self, steps: int = 1, delay: float = 60.0):
+    def simulate(self, steps: int = 0, delay: float = 60.0):
         """Run the simulation for a specified number of steps."""
+        if steps == 0:
+            while True:
+                self.simulate_step()
+                time.sleep(delay)
         for _ in range(steps):
             self.simulate_step()
             time.sleep(delay)
